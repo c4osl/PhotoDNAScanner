@@ -1,0 +1,109 @@
+Request
+https://api.microsoftmoderator.com/photodna/v1.0/Match[?enhance][&dataType]
+Request parameters
+Name
+In
+Required
+Type
+Description
+enhance
+query
+false
+boolean
+Enables additional detection capabilities to broaden the spectrum of matches. Note: Using this feature will increase system response time.
+
+dataType
+query
+false
+string
+Specifies which type is being passed in for the multipart/form-data.
+
+Request body
+The request body can be an image; the following MIME types are supported:
+
+Content-Type: image/gif
+Content-Type: image/jpeg
+Content-Type: image/png
+Content-Type: image/bmp
+Content-Type: image/tiff
+Match also accepts files supplied as multipart/form-data. Each file would be submitted as a key/value pair with the key being a name and the value being the file. The following formats are supported:
+
+PDNA Hash - CSV as plain text (dataType: Hash)
+PDNA Hash - Hex string as bytes (dataType: HashHex)
+PDNA Hash - Base64 string as bytes (dataType: HashBase64)
+PreHashV2 - as bytes (dataType: PreHashV2Binary)
+PreHashV2 - Base64 string as bytes (dataType: PreHashV2Base64)
+PreHash - as bytes (dataType: PreHash)
+Alternatively, a publicly accessible URL of an image (gif, jpeg, png, bmp, or tiff), a PDNA hash, or an EdgeHashV2 (Base64 string) could be provided as in the example below (Content-Type: application/json);
+N.B., response time from the service may be adversely affected by external sources' download speeds.
+
+application/json
+default
+default - json
+ Copy
+{
+    "DataRepresentation": "URL",
+    "Value": "https://pdnasampleimages.blob.core.windows.net/matchedimages/img_130.jpg"
+}
+Response: 200 OK
+Name	Description
+Status	Status codes and corresponding descriptions:
+3000: OK
+3002: Invalid or missing request parameter(s)
+3004: Unknown scenario or unhandled error occurred while processing request
+3206: The given file could not be verified as an image
+3208: Image size in pixels is not within allowed range (minimum size is 160x160 pixels; maximum size is 4MB)
+TrackingId	UniqueID that identifies this individual request.
+IsMatch	Boolean value indicating whether the submitted image matched a known image
+MatchDetails	
+Collection of MatchFlags.
+
+Source: Specifies the hash source of known image which the submitted image matched.
+
+Violations: “A1”, “A2”, “B1” or “B2” representing the industry classification of the closest matching content as reported by the hash source provider.
+
+MatchDistance: The squared Euclidean distance between the PhotoDNA hash of the image presented and the closest matching hash from the database. The smaller the distance, the more similar those two images are. Matches are returned for the distances equal to the match threshold or closer. This threshold was established by a large-scale test to determine the value at which there were no incorrect matches.
+
+Note: Submitted images may match images from multiple sources.
+
+EvaluateResponse	
+Collection of image evaluation flags:
+
+AdultClassificationScore: Numeric score representing the likelihood of adult content
+IsImageAdultClassified: Boolean representing whether or not adult content was found
+RacyClassificationScore: Numeric score representing the likelihood of racy content
+IsImageRacyClassified: Boolean representing whether or not racy content was found
+AdvancedInfo: reserved for future use
+Result: Boolean representing whether or not adult and/or racy content was found
+Note: this object is null unless the header 'Enable-Evaluation' is present and a valid Content Moderator key has been provided in PhotoDNA portal.
+
+
+application/json
+default
+default - json
+ Copy
+{
+    "Status": {
+        "Code": 3000,
+        "Description": "OK",
+        "Exception": null
+    },
+    "ContentId": null,
+    "IsMatch": true,
+    "MatchDetails": {
+        "AdvancedInfo": [],
+        "MatchFlags": [{
+            "AdvancedInfo": [{
+                "Key": "MatchId",
+                "Value": "7469692"
+            }],
+            "Source": "Test",
+            "Violations": ["A1"],
+            "MatchDistance": 179
+        }]
+    },
+    "XPartnerCustomerId": null,
+    "TrackingId": "WUS_12c055e2a26646afb49ebbafb6487bc8_57c7457ae3a97812ecf8bde9_728f874a54c7432ea45631d1df2ee7ab",
+    "EvaluateResponse": null
+}
+Powered by Azure API Manag
