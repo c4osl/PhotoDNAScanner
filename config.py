@@ -19,7 +19,7 @@ class Config:
         """Create default configuration file"""
         self.config['PhotoDNA'] = {
             'api_key': os.getenv('PHOTODNA_API_KEY', ''),
-            'api_endpoint': 'https://api.microsoftmoderator.com/photodna/v1.0/Match'
+            'api_endpoint': 'https://api.microsoftmoderator.com/photodna/v1.0/MatchHash'
         }
 
         # Write config file
@@ -45,4 +45,4 @@ class Config:
         try:
             return self.config['PhotoDNA']['api_endpoint']
         except (KeyError, configparser.NoSectionError):
-            return 'https://api.microsoftmoderator.com/photodna/v1.0/Match'
+            return 'https://api.microsoftmoderator.com/photodna/v1.0/MatchHash'

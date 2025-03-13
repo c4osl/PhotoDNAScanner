@@ -42,8 +42,12 @@ class FileScanner:
             return None
 
         try:
-            # Send the image directly to the API
-            api_result = self.api_client.check_image(file_path)
+            # Calculate file hash
+            file_hash = calculate_file_hash(file_path)
+            print(f"Generated hash for {file_path}: {file_hash}")
+
+            # Send the hash to the API
+            api_result = self.api_client.check_hash(file_hash)
             print(f"API Response for {file_path}: {api_result}")
 
             return {

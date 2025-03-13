@@ -1,0 +1,103 @@
+Match Hash
+Try it 
+Details
+This operation accepts batches of hashes at a time with a maximum of 5 hashes per submission and for quota purposes this will count as a single request. The hash is checked for matches against known child exploitation hash datasets provided by organizations like:
+National Center for Missing and Exploited Children (NCMEC)
+Industry hash sharing – US (TC)
+Canadian Technology Industry (CIH)
+Cybertip.ca (CCA)
+Internet Watch Foundation (IWF) - if permitted
+More hash sources will be added over time. To see the current list of hash sources please log into your account at https://myphotodna.microsoftmoderator.com
+Testing
+Integration with the API can be tested using this set of sample images, some of which will return matches against the 'Test' source.
+Request
+https://api.microsoftmoderator.com/photodna/v1.0/MatchHash
+Request body
+PDNA Hashes and EdgeHashv2 Hashes (Base64 string) provided in JSON format are possible inputs for this endpoint.
+An example can be found below:
+
+application/json
+default
+default - json
+ Copy
+[{
+    "DataRepresentation": "Hash",
+    "Value": "*insert pdna hash*"
+}, {
+    "DataRepresentation": "Hash",
+    "Value": "*insert pdna hash*"
+}]
+Response: 200 OK
+Name	Description
+Status	Status codes and corresponding descriptions:
+3000: OK
+3002: Invalid or missing request parameter(s)
+3004: Unknown scenario or unhandled error occurred while processing request
+3206: The given file could not be verified as an image
+3208: Image size in pixels is not within allowed range (minimum size is 160x160 pixels; maximum size is 4MB)
+TrackingId	UniqueID that identifies this individual request.
+IsMatch	Boolean value indicating whether the submitted image matched a known image
+MatchDetails	
+Collection of MatchFlags.
+
+Source: Specifies the hash source of known image which the submitted image matched.
+
+Violations: “A1”, “A2”, “B1” or “B2” representing the industry classification of the closest matching content as reported by the hash source provider.
+
+MatchDistance: The squared Euclidean distance between the PhotoDNA hash of the image presented and the closest matching hash from the database. The smaller the distance, the more similar those two images are. Matches are returned for the distances equal to the match threshold or closer. This threshold was established by a large-scale test to determine the value at which there were no incorrect matches.
+
+Note: Submitted images may match images from multiple sources.
+
+
+application/json
+default
+default - json
+ Copy
+{
+    "TrackingId": "WUS_1_photodna_9c824cbf879443149cbb0c522bf33775",
+    "MatchResults": [{
+        "Status": {
+            "Code": 3000,
+            "Description": "OK",
+            "Exception": null
+        },
+        "ContentId": null,
+        "IsMatch": true,
+        "MatchDetails": {
+            "AdvancedInfo": [],
+            "MatchFlags": [{
+                "AdvancedInfo": [{
+                    "Key": "MatchId",
+                    "Value": "2600000"
+                }],
+                "Source": "Test",
+                "Violations": ["A1"],
+                "MatchDistance": 179
+            }]
+        },
+        "XPartnerCustomerId": null,
+        "TrackingId": "WUS_1_photodna_9c824cbf879443149cbb0c522bf33775"
+    }, {
+        "Status": {
+            "Code": 3000,
+            "Description": "OK",
+            "Exception": null
+        },
+        "ContentId": null,
+        "IsMatch": true,
+        "MatchDetails": {
+            "AdvancedInfo": [],
+            "MatchFlags": [{
+                "AdvancedInfo": [{
+                    "Key": "MatchId",
+                    "Value": "2600001"
+                }],
+                "Source": "Test",
+                "Violations": ["A1"],
+                "MatchDistance": 147
+            }]
+        },
+        "XPartnerCustomerId": null,
+        "TrackingId": "WUS_1_photodna_9c824cbf879443149cbb0c522bf33775"
+    }]
+}
